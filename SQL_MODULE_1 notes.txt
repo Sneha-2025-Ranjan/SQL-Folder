@@ -12,7 +12,32 @@ world
  To hide/unhide the results/console window/pane : Ctrl + R
  To Comment a line of code  : Ctrl+K+C
  To uncomment : Ctrl+K+U
- 
+
+## SQL commands are categorized into five main types based on their functionality:
+a) Data Definition Language (DDL): These commands are used to define, modify, or delete database objects like tables, views, indexes, etc.
+1. CREATE: Used to create new database objects (e.g., CREATE TABLE, CREATE DATABASE).
+2. ALTER: Used to modify the structure of existing database objects (e.g., ALTER TABLE).
+3. DROP: Used to delete database objects (e.g., DROP TABLE, DROP DATABASE).
+4. TRUNCATE: Used to remove all rows from a table, effectively emptying it while keeping the table structure.
+5. RENAME: Used to rename database objects.
+
+b) Data Manipulation Language (DML): These commands are used to manage and manipulate data within database objects.
+1. INSERT: Used to add new rows of data into a table.
+2. UPDATE: Used to modify existing data within a table.
+3. DELETE: Used to remove rows of data from a table.
+
+c)  Data Query Language (DQL): This category primarily consists of one command used for retrieving data.
+1. SELECT: Used to retrieve data from one or more tables based on specified criteria.
+
+d) Data Control Language (DCL): These commands are used to control access to data and database objects, managing user permissions.
+1. GRANT: Used to give specific privileges to users on database objects. 
+2. REVOKE: Used to remove previously granted privileges from users.
+
+d) Transaction Control Language (TCL): These commands are used to manage transactions, ensuring data integrity and consistency.
+1. COMMIT: Used to save all changes made in the current transaction permanently to the database.
+2. ROLLBACK: Used to undo changes made in the current transaction, reverting the database to its state before the transaction began.
+3. SAVEPOINT: Used to set a point within a transaction to which you can later roll back. 
+
  CREATE A DATABASE
 	 Database is a storage unit that helps us in storing data in form of tables.
 	 Database also holds certain other objects that helps us in managing and accessing data as well.
@@ -21,7 +46,7 @@ world
 --1. To create a database using Transact-SQL(TSQL)
 CREATE DATABASE SQL_Practise
 
---2. Using the GUI(Graphical User Interface)
+--2. Using the GUI(Graphical User Interface) 
 
 -- Whenever we create a database there are two files that are created : 
 	-- MDF (Master Data File) - It holds data that is stored
@@ -419,4 +444,5 @@ FROM Employee
 --WHERE EmployeeFirstName LIKE 'd%' -- Filters out all the records which begins with d
 --WHERE EmployeeFirstName LIKE '%o%' -- Filter out all records which contains o in it
 WHERE EmployeeFirstName LIKE '%s_'
+
 --WHERE EmployeeFirstName LIKE '__h%'
