@@ -1,4 +1,4 @@
-# 📊 SQL August Major Project (Fact, Product, and Location Tables)
+# 📊 SQL August-Major-Project (Fact, Product, and Location Tables)
 
 ## 🧩 Overview
 This project demonstrates **data analysis using SQL (Microsoft SQL Server)** with three related tables:
