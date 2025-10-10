@@ -1,0 +1,287 @@
+Select * from Employee
+select *,
+case
+when Salary<=1000 then 'C'
+when Salary<=2000 then 'B'
+when Salary <=3000 then 'B+'
+when Salary <=4000 then 'A'
+else 'A+'
+end as Salary_Grd
+
+select * from Employee
+
+select * from Employee
+where EmployeeId = 6
+-- Science Book
+10 chapters --- 400 pages
+1 --- 5-25
+2-   26-56
+3   -- 57-120
+
+-- Query Optimization ?
+
+Select * from employee
+where Employee_Id = 6
+
+--  it will read all 8 records that are availabl ein my table
+
+--== Indexes
+	-- They are routes to better performance in SQL Server
+	-- Index's helps in faster access by providing swift access to rows in data tables
+	-- This is very similar to an index page in a book
+	-- Microsoft very often makes changes to the way Indexes are organized and managed
+	
+--== Index Structure	 
+	-- Indexes are basically created on tables(columns)
+	-- They provide faster access to data using the column 
+		-- on which the index is created (indexed column)
+	-- Indexes are basically B-Tree(Binary Tree) structures which helps us in flattening our tables
+		-- and hence providing easy access to the data rows
+	-- Without an index, a table is called a heap
+	-- We can create indexes on most data columns in a table
+	-- We cannot create indexes on Large object data types (LOB)
+		-- image data, text data, varchar(max), nvarchar(max)
+	-- Indexes are very effective when created on a unique integer column
+
+Heap:
+folded all clothes
+
+ 
+/*
+Employee
+(EmployeeId, Name, Designation, Salary, Department)
+1 
+2
+3
+4
+5
+6
+7
+8
+9
+10
+....
+20
+
+SELECT * FROM Employee WHERE EmployeeID = 10
+Without Index - 20 Reads -- Table Scan
+With Index - 3 Reads - Index Seek
+le
+1							1-20
+2				1-10					11-20
+3		1-5				6-10		11-15			16-20
+4	1-2		3-5		6-7		8-10 11-12	13-15	16-17	18-20
+							
+							8 - (Address Pointer)
+							9 - (Address Pointer2)
+							10- (Address Pointer3)
+
+							8-x,9-y,10-z
+5	1-*,2-*		3,4,5	6,7		8,9,10
+
+							1-999()
+1 2 3 4 5 6 7 8 9 10  -----				999
+
+*/
+
+--== Types of Indexes
+	-- Clustered Index
+		-- The complete data row is actually stored in the leaf node of the index
+		-- The indexed column is either arranged in ascending or descending order		
+		-- The data is physically sorted in asc or desc in the data file itself
+		-- You can have only one clustered index per table
+		-- You can include multiple columns in the clustered index, but it is not always recommended.
+		-- Table with a clustered index is usually referred to as a clustered table
+
+	-- Non Clustered Index
+		-- Unlike the CI, leaf nodes of NCI does not store the entire data row
+		-- Instead it stores a pointer/memory address to the row in the memory
+		-- The NCIndexed column data is sorted but on the fly
+		-- You can have more than one NCI on a table
+		-- SQL Server 2005 supports 249 NCI, SQL Server 2008 supports +999
+
+--INDEXES ARE A NECESSARY EVIL
+
+CREATE TABLE IndexTest (
+    id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+-- Insert values into the table
+DECLARE @i INT = 1;
+WHILE @i <= 10000
+BEGIN
+    INSERT INTO IndexTest (id, name)
+    VALUES (@i, 'Vyankat' + CAST(@i AS VARCHAR(5)));
+    SET @i = @i + 1;
+END;
+
+
+select * from IndexTest
+where id =10000
+
+
+SELECT * INTO IndexTest_CI FROM IndexTest
+
+SELECT * FROM IndexTest
+SELECT * FROM IndexTest_CI
+
+SELECT * FROM IndexTest
+WHERE Id = 7748
+/* WITHOUT INDEX : 
+Operation : Table Scan
+No Of Rows Read : 10000
+I/O : 0.027
+CPU : 0.011
+*/
+/* WITH CLUSTERED INDEX
+Operation : Index Seek
+No Of Rows Read : 1 
+I/O : 0.003125
+CPU : 0.0001581
+*/
+
+CREATE CLUSTERED INDEX IX_IndexTest_CI_Id ON IndexTest_CI(Id)
+SELECT * FROM IndexTest_CI
+WHERE Id = 7748
+--CREATE NONCLUSTERED INDEX IX_NCI_IndexTest_Name ON IndexTest_CI(Name)
+--GO
+
+
+
+ALTER TABLE IndexTest_CI
+DROP INDEX IX_IndexTest_CI_Id
+
+
+--Prerequisities : 
+	-- For heavily updated tables keep the index columns to as few as possible
+	-- When there are not much updation happening, create as many indexes as required
+	-- For clustered index, create it on unique int columns to get the best out of it. 
+	-- Creating it on the primary key is the best
+-- Whenever we create a primary key on a column in a table, SQL Server 
+	-- by default creates a unique clustered index on that column
+-- Whenever you create a UNIQUE constraint on a column, SQL by default creates
+	-- a non clustered index on that column
+
+	--*** Normalization ***--     
+
+--	Software 
+--SW
+--SWare
+
+--== Normalization
+--   Process that helps us in reducing data redundancy in accordance with a series
+--   of normal forms
+
+--   Types of Normal Forms
+--      First Normal Form (1 NF)
+--      Second Normal Form (2 NF)
+--      Third Normal Form (3 NF)
+
+--   Drawbacks of data redundancy :
+--      Data maintenance becomes tedious
+--      Data Inconsistencies pop up
+--      Data Manipulation issues
+--      Data Accessibility Issues
+--      Space crunch
+
+--== First Normal Form (1 NF)
+--   Every cell (intersection of a row and a column) must have a single data value
+
+---- DE-NORMALIZED TABLE
+--EMPID    NAME      EMPAGE    DEPT                                     
+--1        Dinesh    27        Software, Testing, Database
+--2        Santosh   28        Management, Sware, Finance
+--3        John      25        SW, Mgmt, Testing
+--4        Smith     29        Software, Testing, Finance
+
+---- NORMALIZED SETUP
+--   First create a Department table (Lookup table)
+
+--DEPTID   DEPTNAME
+--1        Software
+--2        Testing
+--3        Database
+--4        Management
+--5        Sales
+--6        Finance
+
+--EMPID    NAME      EMPAGE    DEPT
+--1        Dinesh    27        1
+--2        Santosh   28        4
+--3        John      25        1
+--4        Smith     29        2
+
+--== SECOND NORMAL FORM (2 NF)
+--   When it is in 1 NF
+--   Partial dependencies are removed and placed in a different table
+
+---- DE-NORMALIZED TABLE
+--COURSE_NAME   START_DATE     TITLE
+--SQL          02-08-2019     SQL Development
+--MSBI         20-08-2019     MSBI Development
+--AWS          01-09-2019     Amazon Web Services Training
+--SQL          02-10-2019     SQL Development
+--SQL          02-11-2019     SQL Development
+--MSBI                        MSBI Development
+
+
+--NORMALIZED SETUP
+--   First create a new table that holds the Name to Title mapping
+
+--COURSE_NAME   TITLE
+--SQL          SQL Development
+--MSBI         MSBI Development
+--AWS          Amazon Web Services Training
+
+--Next, we remove the TITLE column from the DE-NORMALIZED table
+--Hence the structure would look like
+
+--COURSE_NAME  START_DATE           
+--SQL          02-08-2019
+--MSBI         20-08-2019
+--AWS          01-09-2019
+--SQL          02-10-2019
+--SQL          02-11-2019
+
+--== THIRD NORMAL FORM (3 NF)
+--   When the table is in 2 NF
+--   Non-Primary key columns shouldn't depend on other non-primary key columns
+--   Eg Below : Title is not dependent on EmpID
+--   There is no transitive functional dependency
+--   Eg Below : DeptName should be replaced with DeptID (Primary Key of a different table)
+
+--DE-NORMALIZED TABLE
+--EMPID    NAME       COURSENAME   DATEOfCourse   TITLE                            DEPTNAME
+--1        DINESH     SQL          02-08-2019     SQL Development                  Developer
+--2        SANTOSH    AWS          01-09-2019     Amazon Web Services              Management
+--3        Suresh     MSBI         03-10-2020     Microsoft Business Intelligence  Development
+
+
+--NORMALIZED SETUP
+--   First, we create a table to map the course name and the title
+--   COURSENAME     TITLE
+--   SQL           SQL Development
+--   AWS           Amazon Web Services
+--   MSBI          Microsoft Business Intelligence Development
+
+--   Next, we create a DEPT table to remove the other partially dependent columns
+--   DEPTID        DEPTNAME
+--   1             Developer
+--   2             Management
+--   3             Developement
+
+--   Next, let us separate the Employee data
+--   EMPID        NAME        DEPTID
+--   1           DINESH      1
+--   2           SANTOSH     2
+
+--   Next, let us arrange the parent table (Xref)
+--   EMPID       COURSENAME       DATEOfCourse
+--   1          SQL              02-08-2019
+--   2          AWS              02-08-2019
+--   1          AWS              02-08-2019
+use SQL_Practise
+
+
+
