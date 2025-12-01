@@ -271,6 +271,8 @@ SELECT 2,'John'
 SELECT * FROM PrimaryKeyTest
 
 -- Foreign Key
+   --- A foreign key is a column or a set of columns in a database table (the "child table") that refers to the primary key
+   ---(or a unique key) in another table (the "parent table")
 /*
 Emp(Parent Table)
 EmpId(PK) Name
@@ -446,3 +448,4 @@ FROM Employee
 WHERE EmployeeFirstName LIKE '%s_'
 
 --WHERE EmployeeFirstName LIKE '__h%'
+
