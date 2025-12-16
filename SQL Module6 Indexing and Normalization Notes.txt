@@ -285,3 +285,102 @@ use SQL_Practise
 
 
 
+---Trigger ---
+A trigger in SQL is a special kind of stored procedure that automatically executes or "fires" in response to specific events on a database or its objects, such as INSERT, UPDATE, or DELETE operations on a table
+
+--Syntax:
+create trigger [trigger_name] 
+[before | after]  
+{insert | update | delete}  
+on [table_name]  
+FOR EACH ROW
+BEGIN
+END;
+
+--In this explanation:
+  --trigger_name:-  The name of the trigger to be created
+  --BEFORE | AFTER:- Specifies whether the trigger is fired before or after the triggering event (INSERT, UPDATE, DELETE).
+  --{INSERT | UPDATE | DELETE}:- Specifies the operation that will activate the trigger.
+  --table_name:- The name of the table the trigger is associated with.
+  --FOR EACH ROW:- Indicates that the trigger is row-level, meaning it executes once for each affected row.
+  --trigger_body:- The SQL statements to be executed when the trigger is fired.
+
+--Types of SQL Triggers
+SQL triggers are generally categorized by the type of event they respond to: 
+--1. DML (Data Manipulation Language) Triggers: These are the most common type and fire in response to INSERT, UPDATE, and DELETE statements on a table or view.
+     -- AFTER Triggers: Execute after the triggering DML statement successfully completes. They are useful for logging or updating data in other tables based on the final data.
+     --BEFORE Triggers: Execute before the data modification occurs. They are often used for data validation or modifying the new record values before they are saved to the                              database.
+     --INSTEAD OF Triggers: These override the standard DML action entirely and execute their own logic instead. They are often used to make complex views updatable.
+
+--2. DDL (Data Definition Language) Triggers:-
+        These fire in response to DDL events like CREATE, ALTER, or DROP statements for database objects. They can be used to audit schema changes or prevent certain modifications.
+
+--3. Logon Triggers:
+              These fire when a user session is being established (after successful authentication). They can be used to monitor login activity or restrict access based                        on custom logic. 
+
+--Examples of SQL Triggers
+     Let's explore some practical examples of how SQL triggers can automate tasks. These examples will help you understand the implementation and benefits of using triggers in        your database.
+
+--Creating a basic trigger
+Suppose we have an employees table, and we want to log any deletions from this table. First, create the necessary tables:
+		CREATE TABLE employees (
+    		employee_id INT,
+    		name VARCHAR(100),
+    		department VARCHAR(100)
+		);
+		CREATE TABLE employees_log (
+    		employee_id INT,
+    		name VARCHAR(100),
+    		action VARCHAR(100)
+		);
+		INSERT INTO employees (employee_id, name, department)
+		VALUES (1, 'Alice', 'HR'), (2, 'Bob', 'IT'), (3, 'Charlie', 'Sales'), (4, 'David', 'IT');
+
+   -- Next, create the trigger to log deletions:
+
+		CREATE TRIGGER after_employee_delete
+		AFTER DELETE ON employees
+		FOR EACH ROW
+		BEGIN
+    		INSERT INTO employees_log (employee_id, name, action)
+    		VALUES (OLD.employee_id, OLD.name, 'deleted');
+		END;
+        --This trigger logs the employee details into employees_log whenever an employee record is deleted.
+
+  --Logging changes in a table
+   Logging changes to a table is important for auditing and maintaining a history of data modifications. We can extend the previous example to log updates as well:
+		CREATE TRIGGER after_employee_update
+		AFTER UPDATE ON employees	
+		FOR EACH ROW
+		BEGIN
+    		INSERT INTO employees_log (employee_id, name, action)
+    		VALUES (OLD.employee_id, OLD.name, 'updated');
+		END;
+  -- This trigger ensures that any employee table updates are logged in the employees_log table. By capturing this information, you can track changes over time and maintain a         history of data modifications for auditing purposes.
+
+ --Automatically updating related tables
+  This can help maintain data consistency and reduce manual effort. For instance, when a new order is placed, you might want to update the customer's last order date.
+		CREATE TRIGGER after_order_insert
+		AFTER INSERT ON orders
+		FOR EACH ROW
+		BEGIN
+  		UPDATE customers
+  		SET last_order_date = NOW()
+  		WHERE id = NEW.customer_id;
+		END;
+   --This trigger updates the last_order_date in the customers table whenever a new order is inserted into the orders table. This ensures that customer information is always up-       to-date, enhancing data accuracy and consistency.
+
+--Using old and new trigger variables
+In PL/SQL, OLD and NEW are trigger variables that refer to the values of columns before and after the triggering event, respectively. We need these variables for accessing and manipulating data in triggers. For example, you can use these variables to track changes:
+		CREATE TRIGGER track_changes
+		AFTER UPDATE ON employees
+		FOR EACH ROW	
+		BEGIN
+    		INSERT INTO change_log (employee_id, old_name, new_name)
+    	VALUES (OLD.employee_id, OLD.name, NEW.name);
+		END;
+  --This trigger logs employees' old and new names whenever their records are updated.
+
+
+
+
