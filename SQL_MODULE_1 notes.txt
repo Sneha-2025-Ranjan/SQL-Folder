@@ -447,5 +447,6 @@ FROM Employee
 --WHERE EmployeeFirstName LIKE '%o%' -- Filter out all records which contains o in it
 WHERE EmployeeFirstName LIKE '%s_'
 
---WHERE EmployeeFirstName LIKE '__h%'
+--WHERE EmployeeFirstName LIKE '_h%' --- filters all records that starts with any letter but second letter should be h-- eg --ahmed, thomas, shara 
+
 
